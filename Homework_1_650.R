@@ -60,7 +60,7 @@ se.beta.0 <- sqrt(sig2.hat*(1/length(depression$Fatalism)+x.bar^2/ssx))
 # H0: beta.1 equals 0 HA: beta.1 does not equal 0
 t.beta.1 <- beta.1/se.beta.1 ## 6.23 
 df <- length(depression$Fatalism) - 2 ## df: n-2 
-dt(t.beta.1, df) ## p < 0.001
+2 * pt(-abs(t.beta.1), df) ## p < 0.001
 # Higher fatalism scores are significantly associated with higher depression scores (p < 0.001)
 
 ## e)Report and interpret the R -squared statistic 
@@ -183,7 +183,23 @@ summary(depression.mod7)
 ## Give the value ofthe parameter being tested, the test statistic, the distribution and degrees of freedomof the test statistic, and give statistical conclusion (Reject/not reject Ho.).
 
 test.stat.beta.6 <- depression.mod7$coefficients[6]/coef(summary(depression.mod7))[6,2]
-dt(test.stat.beta.6, length(depression$Fatalism) - 6)
+2 * pt(-abs(test.stat.beta.6), df = 606) ## p = 0.044 < 0.05
+# We reject H0 and conclude that B_3 /= 0
+
+## c) Use results from the fitted model to obtain point estimates and confidence intervalsfor the fatalism-depression association 
+## among females, and a separate point estimate and CI for the fatalism-depression association among males.
+
+summary(depression.mod7)$cov.unscaled
+B.female.fatal <- depression.mod7$coefficients[2] + depression.mod7$coefficients[6]
+
+se.female.fatal <- sqrt(0.4114^2 + 0.6385^2 + )
+
+
+## d) Write a 1 sentence intepretation of the test in (b), as would be given in a researcharticle, 
+## and then give another sentence interpreting the associations for males and for females.
+
+
+
 
 
 
