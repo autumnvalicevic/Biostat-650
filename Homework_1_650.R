@@ -115,3 +115,16 @@ depression.mod3 <- lm(Depression ~ Sex, data = depression)
 summary(depression.mod3) ## coefficient of Sex: 0.7512 = 5.97 - 5.22 and the p value is the same as the pooled variance 0.080
 ## we can do regression with dummy variables and obtain the same answer as t-test that assumes equal variance
 
+
+## QUESTION 4
+## Continue with the dataset from Homework 1. Estimate and interpret the association between depression and fatalism after adjusting for 
+## demographic variables (age, sex, and race/ethnicity (MA vs NHW)).  
+## Give R-squared value
+
+depression.mod4 <- lm(Depression ~ Fatalism + Age + Sex + R_E, data = depression)
+summary(depression.mod4)
+depression.mod4$coefficients[2] + 1.96 * coef(summary(depression.mod4))[2,2]
+depression.mod4$coefficients[2] - 1.96 * coef(summary(depression.mod4))[2,2]
+## One higher point in fatalism is associated with 0.25 point increase in depression score keeping all other covariates constant (CI 95%: 0.18, 0.33)
+## This is very similar to the unadjusted association
+## Fatalism and demographic variables explain 10.65% of the variance of depression which is higher than the model with just fatalism
