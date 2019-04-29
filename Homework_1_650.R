@@ -128,3 +128,64 @@ depression.mod4$coefficients[2] - 1.96 * coef(summary(depression.mod4))[2,2]
 ## One higher point in fatalism is associated with 0.25 point increase in depression score keeping all other covariates constant (CI 95%: 0.18, 0.33)
 ## This is very similar to the unadjusted association
 ## Fatalism and demographic variables explain 10.65% of the variance of depression which is higher than the model with just fatalism
+
+## QUESTION 5
+## Clinical collaborators on this project want to fit a model with their existing data to help decide what variables 
+## will allow them to explain the largest amount of variance in future studies of depression. 
+## What is the most appropriate way of testing in this case: partial or sequential? Write the hypotheses being tested.
+## i. Demographic variables (age, sex, and race/ethnicity) 
+## ii.Education 
+## iii.   Stroke risk factors (Hypertension, High cholesterol, Atrial fibrillation, Coronary artery disease, Diabetes, Current smoking, History of stroke)
+## iv.   Stroke severity (NIHSS score) or other comorbidities (comorbidity1)
+## v.Fatalism
+## Conduct the tests required to decide which of the groups of variables in i.-iv. would be most important to collect in the collaborators’ future studies. 
+
+# We want to do sequential testing
+depression.mod5 <-lm(Depression ~ Age + Sex + R_E + Education + Htn + HiChol + Afib + Cad + Db + CurrentSmoker + HxStroke + NIHScore + Comorbidity1 + Fatalism, data = depression)
+summary(depression.mod5)
+anova(depression.mod5)
+
+# SS(B_age, B_sex, B_race|Beta.0) / 3/ MSE
+test.stat1 <- (640.1 + 87.59 + 9.35)/3/24.40
+df(test.stat1, 3, 612-15)
+
+# SS(B_edu|B_age, B_sex, B_race,Beta.0) / 1 / MSE
+test.stat2 <- (107.95)/1/24.40
+df(test.stat2, 1, 597)
+
+# SS(B_htn, B_hichol, B_afib, B_cad, B_curr, B_hxstroke| B_edu, B_age, B_sex, B_race,Beta.0))
+test.stat3 <- (561.34 + 16.47 + 22.66 + 4.22 + 186.47 + 41.59 + 48.01)/7/24.4
+df(test.stat3, 7, 597)
+
+# SS(B_nihscore, B_comorb | B_htn, B_hichol, B_afib, B_cad, B_curr, B_hxstroke, B_edu, B_age, B_sex, B_race,Beta.0))
+test.stat4 <- (42.55 + 20.16) / 2/ 24.4
+df(test.stat4, 2, 597)
+## We stop here because we do not reject these variables
+
+# We end up not collecting information on Fatalism
+
+## QUESTION 6 
+## Stroke  researchers  are  interested  in  knowing  whether,  among  strokepatients, the association between fatalism (predictor) and depression (outcome) 
+## differs by sex (i.e., fatalism slope differs by sex), in models adjusted for age and race/ethnicity.  
+
+
+
+## a) Use  appropriately  “centered”  and/or  “scaled”  covariates  and  write  down  a  single model 
+## equation that would allow you to test the null hypothesis that the fatalism-depression  association  among  females  is  not  different  from  the  fatalism-depression association among males.  
+## The alternative hypothesis is that there is a difference inthis association.  
+## Write the null and alternative hypotheses in terms of a parameterfrom the model.
+
+# H0: B_5 = 0 HA: B_5 /= 0
+depression.mod7 <- lm(Depression ~ Fatalism_IQR + I((Age-mean(Age))/10) + Sex + Fatalism_IQR * Sex + R_E, data = depression)
+summary(depression.mod7)
+
+## b) Use the stroke dataset to fit the model in (a), and carry out the test.  
+## Give the value ofthe parameter being tested, the test statistic, the distribution and degrees of freedomof the test statistic, and give statistical conclusion (Reject/not reject Ho.).
+
+test.stat.beta.6 <- depression.mod7$coefficients[6]/coef(summary(depression.mod7))[6,2]
+dt(test.stat.beta.6, length(depression$Fatalism) - 6)
+
+
+
+
+
